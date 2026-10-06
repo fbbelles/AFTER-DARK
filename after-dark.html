@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#0d0d10">
+<title>AFTER DARK</title>
+<style>
+:root{--bg:#0d0d10;--card:#17171c;--c2:#202027;--tx:#f5f5f7;--mu:#a4a4ad;--ln:#303039;--ac:#ff4d7d;--ac2:#8b5cf6}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(circle at top,#241321 0,#0d0d10 42%) fixed;color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}button{border:0;cursor:pointer}
+.app{max-width:720px;margin:auto;padding:calc(env(safe-area-inset-top) + 8px) 16px calc(24px + env(safe-area-inset-bottom))}
+.logo{font-weight:900;letter-spacing:2px;font-size:22px;text-align:center;padding:10px 0}.logo span{color:var(--ac)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:6px}
+.tabs button{background:var(--card);color:var(--mu);padding:11px 4px;border-radius:12px;font-size:12px;font-weight:800}.tabs button.on{background:var(--c2);color:var(--tx)}
+.screen{display:none}.screen.on{display:block}
+h1{font-size:34px;letter-spacing:-1.5px;text-align:center;margin:18px 0 4px}.sub{color:var(--mu);text-align:center;margin:0 0 8px}
+.panel{background:rgba(23,23,28,.94);border:1px solid var(--ln);border-radius:22px;padding:16px;margin:12px 0}
+label{display:block;color:var(--mu);font-size:12px;font-weight:800;letter-spacing:.5px;margin:14px 0 7px}label:first-child{margin-top:0}
+input,select,textarea{width:100%;background:#111116;color:var(--tx);border:1px solid var(--ln);border-radius:13px;padding:12px;outline:none;font-size:16px}
+textarea{min-height:100px}input:focus,select:focus,textarea:focus{border-color:var(--ac)}
+.row{display:flex;gap:8px}.row>*{flex:1}.row>.fit{flex:none}
+.btn{width:100%;padding:14px;border-radius:14px;background:var(--c2);color:var(--tx);font-weight:800}
+.btn.p{background:linear-gradient(135deg,var(--ac),#ff7b5c)}.btn.s{background:linear-gradient(135deg,var(--ac2),#5b7cff)}.btn.d{background:#351719;color:#ff9b9b}.btn.sm{padding:10px;font-size:13px}
+.btn+.btn{margin-top:8px}
+.ch{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.ch button{padding:12px;border:1px solid var(--ln);background:#111116;color:var(--tx);border-radius:14px;text-align:left}.ch button.sel{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac) inset}.ch b{display:block}.ch small{color:var(--mu)}
+.chip{display:inline-flex;gap:8px;align-items:center;background:var(--c2);border-radius:99px;padding:8px 12px;margin:0 6px 6px 0;font-weight:700;font-size:14px}.chip b{color:var(--ac);cursor:pointer}.chip.off{opacity:.4;text-decoration:line-through}
+.hint{color:var(--mu);font-size:12px;line-height:1.4}
+.top{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px}.turn{font-size:22px;font-weight:900}.top span{color:var(--mu);font-size:13px}
+.card{margin:14px 0;background:linear-gradient(145deg,#21151c,#15151a 55%);border:1px solid #3b2932;border-radius:28px;min-height:400px;padding:24px 20px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 60px #0008}
+.card.l2{border-color:#6b4a2a}.card.l3{border-color:#8a2c3c}.card.l4{border-color:#6b3fb0;background:linear-gradient(145deg,#1d1530,#15151a 55%)}
+.badges{display:flex;gap:6px;flex-wrap:wrap}.badge{padding:6px 10px;border-radius:99px;background:#2a2027;color:#ffd5df;font-size:12px;font-weight:800}
+.big{font-size:14px;font-weight:900;letter-spacing:1px;color:var(--mu);margin-top:22px}.txt{font-size:27px;line-height:1.15;font-weight:850;letter-spacing:-.6px;margin:10px 0 18px}
+.q{color:var(--mu);margin:0 0 12px}.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.acts .btn{margin:0}
+.pen{text-align:center}.pen h2{font-size:30px;margin:26px 0 6px}.pen p{color:var(--mu)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 4px;text-align:center;border-bottom:1px solid var(--ln)}th:first-child,td:first-child{text-align:left;font-weight:800}th{color:var(--mu);font-size:12px}
+.log{font-size:13px;padding:9px 0;border-bottom:1px solid var(--ln);color:#ddd}.log small{color:var(--mu);display:block}
+.mini{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:13px;margin-top:9px}.mini p{margin:8px 0;line-height:1.35;color:#ddd}.mini .row{margin-top:8px}.meta{color:var(--mu);font-size:12px}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;z-index:20}.modal.on{display:flex}.sheet{background:#17171c;border:1px solid var(--ln);border-radius:25px 25px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));width:100%;max-height:92vh;overflow:auto}
+.lvrow{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;align-items:center;margin-bottom:8px;font-size:14px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:#fff;color:#111;padding:11px 15px;border-radius:12px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:50}.toast.on{opacity:1;transform:translateX(-50%)}
+</style></head><body><div class="app">
+<div class="logo">AFTER <span>DARK</span></div>
+<div class="tabs"><button onclick="go(G?'game':'home')">🎮 Jugar</button><button onclick="go('stats')">📊 Marcador</button><button onclick="go('cards')">🃏 Cartas</button><button onclick="go('set')">⚙️ Ajustes</button></div>
+
+<section id="home" class="screen on">
+<h1>¿Quién se atreve?</h1><p class="sub">Preguntas, retos y consecuencias.</p>
+<div class="panel">
+<label>👥 JUGADORES (<span id="cnt">0</span>)</label>
+<div class="row"><input id="np" placeholder="Nombre (o varios separados por coma)" enterkeyhint="done" onkeydown="if(event.key=='Enter')addP()"><button class="btn p fit" style="width:auto;padding:0 18px" onclick="addP()">＋</button></div>
+<div id="pl" style="margin-top:10px"></div>
+<label>🎚️ NIVEL DE INTENSIDAD (hasta…)</label><div class="ch" id="lv"></div>
+<label>TIPO DE PARTIDA</label><div class="ch" id="md"></div>
+<label>CASTIGO AL NEGARSE</label><div class="ch" id="pn"></div>
+<button class="btn p" style="margin-top:16px" onclick="start()">EMPEZAR PARTIDA</button>
+</div></section>
+
+<section id="game" class="screen">
+<div class="top"><div class="turn" id="turn"></div><span id="gsub"></span></div>
+<div id="gc"></div>
+<button class="btn" onclick="nxt()">⏭️ Saltar carta</button>
+</section>
+
+<section id="stats" class="screen"><div class="panel" id="st"></div></section>
+
+<section id="cards" class="screen">
+<div class="row" style="margin-top:12px;align-items:center"><h2 style="margin:0">Cartas <small id="ccount" class="meta"></small></h2><button class="btn s sm fit" style="width:auto" onclick="edit()">＋ Nueva</button></div>
+<div class="panel">
+<div class="row"><select id="ft" onchange="rc()"><option value="">Todos los tipos</option><option value="q">💬 Preguntas</option><option value="c">🔥 Retos</option></select><select id="fl" onchange="rc()"><option value="">Todos los niveles</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+<div class="row" style="margin-top:8px"><select id="fc" onchange="rc()"></select></div>
+<input id="fs" oninput="rc()" placeholder="🔎 Buscar..." style="margin-top:8px"><div id="cl"></div></div>
+<div class="panel"><button class="btn" onclick="expo()">📤 Exportar todas las cartas</button><button class="btn" onclick="$('#imp').click()">📥 Importar cartas</button><input id="imp" type="file" accept=".json" hidden onchange="impo(event)">
+<p class="hint">Se guardan en este dispositivo. Al importar se añaden las que no existan ya. En las cartas de “con otro jugador” escribe {otro} para insertar un nombre al azar.</p></div>
+</section>
+
+<section id="set" class="screen">
+<div class="panel"><label>💀 CASTIGO POR NIVEL (tragos / €)</label><div id="pv"></div>
+<label>CATEGORÍAS ACTIVAS (toca para activar/desactivar)</label><div id="cg"></div></div>
+<div class="panel"><button class="btn d" onclick="resetCards()">↻ Restaurar cartas de ejemplo</button><button class="btn d" onclick="wipe()">🗑️ Borrar todos los datos</button></div>
+</section>
+</div>
+
+<div class="modal" id="md2"><div class="sheet">
+<div class="row" style="align-items:center"><h2 id="mt" style="margin:0">Nueva carta</h2><button class="btn sm fit" style="width:40px" onclick="$('#md2').classList.remove('on')">×</button></div>
+<label>TIPO</label><select id="et"><option value="q">💬 Pregunta</option><option value="c">🔥 Reto</option></select>
+<label>NIVEL</label><select id="el"><option value="1">🟢 1 — Suave</option><option value="2">🟠 2 — Atrevido</option><option value="3">🔴 3 — Picante</option><option value="4">🟣 4 — Sin filtros</option></select>
+<label>CATEGORÍA</label><input id="ec" list="cdl"><datalist id="cdl"></datalist>
+<label>JUGADORES IMPLICADOS</label><select id="en"><option value="1">👤 Solo quien juega</option><option value="2">👤👤 Con otro jugador al azar ({otro})</option><option value="0">👥 Todo el grupo</option></select>
+<label>TEXTO</label><textarea id="ex"></textarea>
+<div class="row" style="margin-top:14px"><button class="btn" onclick="$('#md2').classList.remove('on')">Cancelar</button><button class="btn p" style="margin:0" onclick="saveC()">Guardar</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s),LS=localStorage;
+const CATS={Relaciones:'❤️',Secretos:'🤐',Humillación:'😂',Sexual:'🍑',Personal:'🧠',Grupo:'👥'};
+const LV=[['🟢','Suave'],['🟠','Atrevido'],['🔴','Picante'],['🟣','Sin filtros']];
+const D=[
+['q',1,'Personal',1,'¿Cuál es la cosa más vergonzosa que te ha pasado en una cita?'],
+['q',1,'Secretos',1,'¿Qué pequeño secreto nunca has contado a este grupo?'],
+['q',1,'Relaciones',1,'¿Cuál es tu mayor red flag en una relación?'],
+['q',1,'Personal',1,'¿Qué es lo más raro que haces cuando estás solo/a?'],
+['c',1,'Humillación',1,'Haz una imitación de alguien del grupo durante 20 segundos.'],
+['c',1,'Humillación',1,'Habla con acento exagerado hasta tu próximo turno.'],
+['c',1,'Grupo',0,'Todos señalan a la vez a la persona más divertida. La más señalada cuenta un chiste.'],
+['c',1,'Personal',1,'Enseña la última foto de tu galería, sin cambiarla.'],
+['q',2,'Relaciones',2,'¿Te irías de viaje una semana con {otro}? ¿Por qué sí o por qué no?'],
+['q',2,'Secretos',1,'¿Cuál es la mentira más grande que has contado a una pareja?'],
+['q',2,'Personal',1,'¿En qué es lo primero que te fijas de alguien que te atrae?'],
+['q',2,'Grupo',0,'Todos votan: ¿quién es el más celoso del grupo? El votado se defiende.'],
+['c',2,'Humillación',1,'Lee en voz alta el último mensaje que enviaste, sin explicar el contexto.'],
+['c',2,'Relaciones',2,'Mantén contacto visual con {otro} durante 15 segundos sin reírte.'],
+['c',2,'Humillación',1,'Baila 20 segundos sin música.'],
+['c',2,'Relaciones',2,'Dile a {otro} un cumplido sincero que nunca le hayas dicho.'],
+['c',2,'Sexual',2,'Hazle un piropo a {otro} como si quisieras ligártelo/a.'],
+['q',3,'Sexual',1,'¿Cuál es el sitio más atrevido donde has besado a alguien?'],
+['q',3,'Secretos',2,'¿Has pensado alguna vez en besar a {otro}? Sé sincero/a.'],
+['q',3,'Relaciones',1,'¿Cuál ha sido tu peor ghosting, dado o recibido?'],
+['q',3,'Secretos',1,'¿Qué es lo más atrevido que has enviado por mensaje?'],
+['q',3,'Sexual',1,'¿Cuál es tu fantasía más inesperada?'],
+['c',3,'Secretos',1,'Elige a una persona del grupo y dile al oído algo que nunca te atreverías a decirle normalmente.'],
+['c',3,'Sexual',1,'Elige a alguien y dile al oído qué te parece atractivo de esa persona.'],
+['c',3,'Humillación',1,'Deja que otra persona elija una foto de tu galería para enseñarla 5 segundos.'],
+['c',3,'Humillación',1,'Que el grupo te ponga un apodo vergonzoso que usarás toda la partida.'],
+['c',3,'Grupo',0,'Todos señalan a la vez a quien creen más pícaro. El más votado cuenta una anécdota.'],
+['q',4,'Sexual',1,'¿Cuál ha sido tu experiencia más atrevida que este grupo no conozca?'],
+['q',4,'Secretos',2,'Si nadie pudiera enterarse, ¿tendrías algo con {otro}?'],
+['q',4,'Secretos',1,'¿Qué secreto te daría más miedo que se supiera?'],
+['q',4,'Sexual',1,'¿Qué te enciende al instante de otra persona?'],
+['c',4,'Secretos',1,'Deja que el grupo te haga una pregunta personal y respóndela sin esquivarla.'],
+['c',4,'Sexual',2,'Dile a {otro} qué es lo más atractivo que tiene, sin reírte.'],
+['c',4,'Humillación',2,'Deja que {otro} decida por ti entre dos opciones que proponga el grupo.'],
+['c',4,'Grupo',0,'Cada jugador susurra una pregunta al de su izquierda, que responde en voz baja.']];
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const mk=x=>({id:uid(),type:x[0],level:x[1],cat:x[2],n:x[3],text:x[4]});
+const load=(k,d)=>{try{return JSON.parse(LS.getItem(k))||d}catch(e){return d}};
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+let S=Object.assign({players:[],level:3,mode:'mix',pun:'choose',drinks:[1,2,2,3],money:[1,2,2,4],off:[]},load('ad-set',{}));
+let cards=load('ad-cards',null);if(!Array.isArray(cards)||!cards.length)cards=D.map(mk);
+let G=load('ad-game',null),editId=null;
+const save=()=>{LS.setItem('ad-set',JSON.stringify(S));LS.setItem('ad-cards',JSON.stringify(cards));LS.setItem('ad-game',JSON.stringify(G))};
+function toast(t){let e=$('#toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1800)}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');
+ document.querySelectorAll('.tabs button').forEach((b,i)=>b.classList.toggle('on',['game|home','stats','cards','set'][i].split('|').includes(id)));
+ ({home,stats:rs,cards:rc,set:rset,game(){}})[id]();window.scrollTo(0,0)}
+const cats=()=>[...new Set([...Object.keys(CATS),...cards.map(c=>c.cat)])];
+const ico=c=>CATS[c]||'🃏';
+function ch(id,items,key,cur){$('#'+id).innerHTML=items.map(([v,t,s])=>`<button class="${v===cur?'sel':''}" onclick="S.${key}=${typeof v=='number'?v:`'${v}'`};save();home()"><b>${t}</b><small>${s||''}</small></button>`).join('')}
+function home(){
+ $('#cnt').textContent=S.players.length;
+ $('#pl').innerHTML=S.players.map((p,i)=>`<span class="chip">${esc(p)} <b onclick="S.players.splice(${i},1);save();home()">×</b></span>`).join('')||'<span class="hint">Añade al menos 2 jugadores</span>';
+ ch('lv',LV.map((l,i)=>[i+1,l[0]+' '+l[1],'Nivel '+(i+1)]),'level',S.level);
+ ch('md',[['q','💬 Preguntas'],['c','🔥 Retos'],['mix','🎲 Mixto']],'mode',S.mode);
+ ch('pn',[['d','🍺 Beber'],['m','💰 Pagar'],['p','👕 Prenda'],['choose','🎲 Elegir entre las 3']],'pun',S.pun);
+}
+function addP(){let v=$('#np').value.split(',').map(x=>x.trim()).filter(Boolean);
+ v.forEach(n=>{if(!S.players.some(p=>p.toLowerCase()==n.toLowerCase()))S.players.push(n)});$('#np').value='';save();home()}
+const pool=()=>cards.filter(c=>c.level<=S.level&&!S.off.includes(c.cat)&&(S.mode=='mix'||S.mode==c.type)&&(c.n!=2||S.players.length>1));
+function start(){
+ if(S.players.length<2)return toast('Mínimo 2 jugadores');
+ if(!pool().length)return toast('No hay cartas con esos filtros');
+ G={order:shuf(S.players),i:0,deck:[],log:[],st:{}};
+ G.order.forEach(p=>G.st[p]={pts:0,done:0,ref:0,m:0,d:0,p:0});
+ go('game');draw()}
+function draw(){
+ if(!G.deck.length)G.deck=shuf(pool().map(c=>c.id));
+ let c=null;while(G.deck.length&&!c)c=cards.find(x=>x.id==G.deck.pop());
+ if(!c){toast('No hay cartas disponibles');return go('home')}
+ let p=G.order[G.i%G.order.length],o=shuf(G.order.filter(x=>x!=p))[0]||'';
+ G.cid=c.id;G.cur=p;G.txt=c.text.replace(/\{otro\}/g,o);save();
+ $('#turn').textContent='Turno de '+p;
+ $('#gsub').textContent=`Ronda ${Math.floor(G.i/G.order.length)+1} · ${G.st[p].pts} pts`;
+ const q=c.type=='q';
+ $('#gc').innerHTML=`<div class="card l${c.level}"><div><div class="badges"><span class="badge">${q?'💬 PREGUNTA':'🔥 RETO'} — NIVEL ${c.level}</span><span class="badge">${ico(c.cat)} ${esc(c.cat)}</span>${c.n==2?'<span class="badge">👤👤 Dúo</span>':c.n==0?'<span class="badge">👥 Grupo</span>':''}</div>
+ <div class="big">${LV[c.level-1][0]} ${LV[c.level-1][1].toUpperCase()}</div><div class="txt">${esc(G.txt)}</div></div>
+ <div><p class="q">${q?'¿Respondes?':'¿Lo haces?'}</p><div class="acts"><button class="btn p" onclick="done()">${q?'💬 RESPONDER':'🔥 HACER RETO'}</button><button class="btn d" onclick="refuse()">❌ ME NIEGO</button></div></div></div>`}
+const lvl=()=>cards.find(x=>x.id==G.cid)?.level||1;
+function done(){let l=lvl(),s=G.st[G.cur];s.done++;s.pts+=l;G.log.push({p:G.cur,t:G.txt,r:'ok',l});toast(`+${l} punto${l>1?'s':''} para ${G.cur}`);nxt()}
+function refuse(){
+ let l=lvl(),d=S.drinks[l-1],m=S.money[l-1];
+ const B={d:`<button class="btn p" onclick="take('d')">🍺 Beber ${d} trago${d==1?'':'s'}</button>`,m:`<button class="btn s" onclick="take('m')">💰 Pagar ${m} €</button>`,p:`<button class="btn" onclick="take('p')">👕 Dejar una prenda en el centro</button>`};
+ $('#gc').innerHTML=`<div class="card pen"><div><div class="badges"><span class="badge">💀 CONSECUENCIA</span></div><h2>TE HAS NEGADO</h2><p>${S.pun=='choose'?'Elige tu castigo:':'Toca cumplir:'}</p></div><div>${S.pun=='choose'?B.d+B.m+B.p:B[S.pun]}</div></div>`}
+function take(k){let l=lvl(),s=G.st[G.cur],d=S.drinks[l-1],m=S.money[l-1];s.ref++;
+ let x=k=='d'?(s.d+=d,`🍺 ${d}`):k=='m'?(s.m+=m,`💰 ${m} €`):(s.p++,'👕 prenda');
+ G.log.push({p:G.cur,t:G.txt,r:'no',x,l});nxt()}
+function nxt(){G.i++;draw()}
+function rs(){
+ if(!G)return $('#st').innerHTML='<p class="hint" style="text-align:center">Aún no hay partida en curso.</p>';
+ let rows=Object.entries(G.st).sort((a,b)=>b[1].pts-a[1].pts),mx=Math.max(...rows.map(r=>r[1].ref)),cow=mx>0?rows.filter(r=>r[1].ref==mx).map(r=>r[0]).join(', '):'';
+ $('#st').innerHTML=`<h2 style="margin-top:0">Marcador</h2><table><tr><th>Jugador</th><th>Pts</th><th>✅</th><th>❌</th><th>🍺</th><th>💰</th><th>👕</th></tr>${rows.map(([n,s])=>`<tr><td>${esc(n)}</td><td>${s.pts}</td><td>${s.done}</td><td>${s.ref}</td><td>${s.d}</td><td>${s.m}€</td><td>${s.p}</td></tr>`).join('')}</table>
+ ${cow?`<p class="hint">🐔 Más veces negado: <b>${esc(cow)}</b> (${mx})</p>`:''}
+ <h3>Historial</h3>${G.log.slice().reverse().slice(0,40).map(e=>`<div class="log"><b>${esc(e.p)}</b> ${e.r=='ok'?'✅ cumplió':'❌ se negó → '+e.x} · nivel ${e.l}<small>${esc(e.t)}</small></div>`).join('')||'<p class="hint">Todavía vacío.</p>'}
+ <button class="btn d" style="margin-top:14px" onclick="if(confirm('¿Terminar la partida y borrar marcador?')){G=null;save();go('home')}">Terminar partida</button>`}
+function rc(){
+ let fc=$('#fc'),cv=fc.value;fc.innerHTML='<option value="">Todas las categorías</option>'+cats().map(c=>`<option ${c==cv?'selected':''}>${esc(c)}</option>`).join('');
+ let t=$('#ft').value,l=$('#fl').value,q=$('#fs').value.toLowerCase();
+ let list=cards.filter(c=>(!t||c.type==t)&&(!l||c.level==l)&&(!cv||c.cat==cv)&&(!q||(c.text+c.cat).toLowerCase().includes(q)));
+ $('#ccount').textContent=`(${list.length}/${cards.length})`;
+ $('#cl').innerHTML=list.map(c=>`<div class="mini"><div class="row" style="justify-content:space-between"><span class="badge">${c.type=='q'?'💬':'🔥'} ${LV[c.level-1][0]} N${c.level}</span><span class="meta" style="text-align:right">${ico(c.cat)} ${esc(c.cat)} · ${c.n==2?'👤👤':c.n==0?'👥':'👤'}</span></div><p>${esc(c.text)}</p><div class="row"><button class="btn sm" onclick="edit('${c.id}')">✏️ Editar</button><button class="btn sm d" onclick="delC('${c.id}')">🗑️ Borrar</button></div></div>`).join('')||'<p class="hint" style="text-align:center;margin-top:20px">Sin resultados.</p>'}
+function edit(id){editId=id||null;let c=cards.find(x=>x.id==id)||{};
+ $('#mt').textContent=id?'Editar carta':'Nueva carta';$('#et').value=c.type||'q';$('#el').value=c.level||1;$('#ec').value=c.cat||'';$('#en').value=c.n??1;$('#ex').value=c.text||'';
+ $('#cdl').innerHTML=cats().map(x=>`<option value="${esc(x)}">`).join('');$('#md2').classList.add('on')}
+function saveC(){let text=$('#ex').value.trim(),cat=$('#ec').value.trim();if(!text||!cat)return toast('Completa categoría y texto');
+ let o={type:$('#et').value,level:+$('#el').value,cat,n:+$('#en').value,text};
+ if(editId)Object.assign(cards.find(x=>x.id==editId),o);else cards.push({id:uid(),...o});
+ save();$('#md2').classList.remove('on');rc();toast('Carta guardada')}
+function delC(id){if(!confirm('¿Borrar esta carta?'))return;cards=cards.filter(c=>c.id!=id);save();rc()}
+function expo(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(cards,null,2)],{type:'application/json'}));a.download='after-dark-cartas.json';a.click()}
+function impo(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{
+ let x=JSON.parse(r.result);if(!Array.isArray(x))throw 0;let add=0;
+ x.forEach(c=>{if(!c.text||!c.cat||!['q','c'].includes(c.type)||cards.some(k=>k.text==c.text))return;cards.push({id:uid(),type:c.type,level:Math.min(4,Math.max(1,+c.level||1)),cat:c.cat,n:[0,1,2].includes(c.n)?c.n:1,text:c.text});add++});
+ save();rc();toast(add+' cartas importadas')}catch(err){toast('Archivo no válido')}};r.readAsText(f);e.target.value=''}
+function rset(){
+ $('#pv').innerHTML=LV.map((l,i)=>`<div class="lvrow"><span>${l[0]} ${l[1]}</span><input type="number" min="0" value="${S.drinks[i]}" onchange="S.drinks[${i}]=+this.value||0;save()"><input type="number" min="0" step=".5" value="${S.money[i]}" onchange="S.money[${i}]=+this.value||0;save()"></div>`).join('');
+ $('#cg').innerHTML=cats().map(c=>`<span class="chip ${S.off.includes(c)?'off':''}" onclick="tog('${esc(c).replace(/'/g,"\\'")}')">${ico(c)} ${esc(c)}</span>`).join('')}
+function tog(c){S.off=S.off.includes(c)?S.off.filter(x=>x!=c):[...S.off,c];save();rset()}
+function resetCards(){if(!confirm('Se reemplazarán tus cartas por las de ejemplo.'))return;cards=D.map(mk);save();toast('Cartas restauradas')}
+function wipe(){if(!confirm('¿Borrar jugadores, cartas, ajustes y partida?'))return;['ad-set','ad-cards','ad-game'].forEach(k=>LS.removeItem(k));location.reload()}
+G?go('game'):go('home');if(G)draw_resume();
+function draw_resume(){let c=cards.find(x=>x.id==G.cid);if(!c)return draw();G.deck.push(c.id);G.i--;G.i++;let t=G.txt;draw();G.txt=t}
+</script></body></html>
