@@ -165,7 +165,7 @@ function start(){
  go('game');draw()}
 function draw(){
  if(!G.deck.length)G.deck=shuf(pool().map(c=>c.id));
- let c=null;while(G.deck.length&&!c)c=cards.find(x=>x.id==G.deck.pop());
+ let c=null;while(G.deck.length&&!c){const id=G.deck.pop();c=cards.find(x=>x.id==id)}
  if(!c){toast('No hay cartas disponibles');return go('home')}
  let p=G.order[G.i%G.order.length],o=shuf(G.order.filter(x=>x!=p))[0]||'';
  G.cid=c.id;G.cur=p;G.txt=c.text.replace(/\{otro\}/g,o);save();
