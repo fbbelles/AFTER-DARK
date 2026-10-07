@@ -26,7 +26,7 @@ textarea{min-height:100px}input:focus,select:focus,textarea:focus{border-color:v
 .ch{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.ch button{padding:12px;border:1px solid var(--ln);background:#111116;color:var(--tx);border-radius:14px;text-align:left}.ch button.sel{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac) inset}.ch b{display:block}.ch small{color:var(--mu)}
 .chip{display:inline-flex;gap:8px;align-items:center;background:var(--c2);border-radius:99px;padding:8px 12px;margin:0 6px 6px 0;font-weight:700;font-size:14px}.chip b{color:var(--ac);cursor:pointer}.chip.off{opacity:.4;text-decoration:line-through}
 .hint{color:var(--mu);font-size:12px;line-height:1.4}
-.top{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px}.turn{font-size:22px;font-weight:900}.top span{color:var(--mu);font-size:13px}
+.turnbox{margin:12px 0 0;text-align:center;padding:14px 12px 16px;border-radius:24px;background:linear-gradient(135deg,var(--h1,#ff4d7d),var(--h2,#8b5cf6));box-shadow:0 0 0 2px #fff4 inset,0 10px 44px var(--gl,#ff4d7d77)}.turnbox small{font-weight:900;letter-spacing:3px;font-size:12px;color:#fffd}.turn{font-size:40px;line-height:1.1;font-weight:900;letter-spacing:-1px;text-shadow:0 3px 14px #0006;word-break:break-word}.turnbox span{color:#fffe;font-size:13px;font-weight:700}.pop{animation:pop .45s}@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
 .card{margin:14px 0;background:linear-gradient(145deg,#21151c,#15151a 55%);border:1px solid #3b2932;border-radius:28px;min-height:400px;padding:24px 20px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 60px #0008}
 .card.l2{border-color:#6b4a2a}.card.l3{border-color:#8a2c3c}.card.l4{border-color:#6b3fb0;background:linear-gradient(145deg,#1d1530,#15151a 55%)}
 .badges{display:flex;gap:6px;flex-wrap:wrap}.badge{padding:6px 10px;border-radius:99px;background:#2a2027;color:#ffd5df;font-size:12px;font-weight:800}
@@ -49,14 +49,14 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 4px;t
 <label>👥 JUGADORES (<span id="cnt">0</span>)</label>
 <div class="row"><input id="np" placeholder="Nombre (o varios separados por coma)" enterkeyhint="done" onkeydown="if(event.key=='Enter')addP()"><button class="btn p fit" style="width:auto;padding:0 18px" onclick="addP()">＋</button></div>
 <div id="pl" style="margin-top:10px"></div>
-<label>🎚️ NIVEL DE INTENSIDAD (hasta…)</label><div class="ch" id="lv"></div>
+<label>🎚️ NIVEL DE INTENSIDAD (puedes elegir varios)</label><div class="ch" id="lv"></div>
 <label>TIPO DE PARTIDA</label><div class="ch" id="md"></div>
 <label>CASTIGO AL NEGARSE</label><div class="ch" id="pn"></div>
 <button class="btn p" style="margin-top:16px" onclick="start()">EMPEZAR PARTIDA</button>
 </div></section>
 
 <section id="game" class="screen">
-<div class="top"><div class="turn" id="turn"></div><span id="gsub"></span></div>
+<div class="turnbox" id="tb"><small>🎯 TURNO DE</small><div class="turn" id="turn"></div><span id="gsub"></span></div>
 <div id="gc"></div>
 <button class="btn" onclick="nxt()">⏭️ Saltar carta</button>
 </section>
@@ -69,8 +69,8 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 4px;t
 <div class="row"><select id="ft" onchange="rc()"><option value="">Todos los tipos</option><option value="q">💬 Preguntas</option><option value="c">🔥 Retos</option></select><select id="fl" onchange="rc()"><option value="">Todos los niveles</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
 <div class="row" style="margin-top:8px"><select id="fc" onchange="rc()"></select></div>
 <input id="fs" oninput="rc()" placeholder="🔎 Buscar..." style="margin-top:8px"><div id="cl"></div></div>
-<div class="panel"><button class="btn" onclick="expo()">📤 Exportar todas las cartas</button><button class="btn" onclick="$('#imp').click()">📥 Importar cartas</button><input id="imp" type="file" accept=".json" hidden onchange="impo(event)">
-<p class="hint">Se guardan en este dispositivo. Al importar se añaden las que no existan ya. En las cartas de “con otro jugador” escribe {otro} para insertar un nombre al azar.</p></div>
+<div class="panel"><h3 style="margin-top:0">📦 Exportar / importar cartas</h3><button class="btn" onclick="expo()">📤 Exportar cartas (ZIP con LEEME)</button><button class="btn" onclick="$('#imp').click()">📥 Importar cartas (.json o .zip)</button><button class="btn s" onclick="dlHtml()">💾 Descargar HTML con mis cartas</button><input id="imp" type="file" accept=".json,.zip,application/json,application/zip" hidden onchange="impo(event)">
+<p class="hint">Se guardan en este dispositivo. El botón de descargar HTML crea un index.html nuevo con tus cartas actuales como cartas de partida, para subirlo a GitHub. Al importar se añaden las que no existan ya. En las cartas de “con otro jugador” escribe {otro} para insertar un nombre al azar.</p></div>
 </section>
 
 <section id="set" class="screen">
@@ -95,7 +95,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 4px;t
 const $=s=>document.querySelector(s),LS=localStorage;
 const CATS={Relaciones:'❤️',Secretos:'🤐',Humillación:'😂',Sexual:'🍑',Personal:'🧠',Grupo:'👥'};
 const LV=[['🟢','Suave'],['🟠','Atrevido'],['🔴','Picante'],['🟣','Sin filtros']];
-const D=[
+/*D0*/const D=[
 ['q',1,'Personal',1,'¿Cuál es la cosa más vergonzosa que te ha pasado en una cita?'],
 ['q',1,'Secretos',1,'¿Qué pequeño secreto nunca has contado a este grupo?'],
 ['q',1,'Relaciones',1,'¿Cuál es tu mayor red flag en una relación?'],
@@ -130,13 +130,14 @@ const D=[
 ['c',4,'Secretos',1,'Deja que el grupo te haga una pregunta personal y respóndela sin esquivarla.'],
 ['c',4,'Sexual',2,'Dile a {otro} qué es lo más atractivo que tiene, sin reírte.'],
 ['c',4,'Humillación',2,'Deja que {otro} decida por ti entre dos opciones que proponga el grupo.'],
-['c',4,'Grupo',0,'Cada jugador susurra una pregunta al de su izquierda, que responde en voz baja.']];
+['c',4,'Grupo',0,'Cada jugador susurra una pregunta al de su izquierda, que responde en voz baja.']];/*D1*/
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const mk=x=>({id:uid(),type:x[0],level:x[1],cat:x[2],n:x[3],text:x[4]});
 const load=(k,d)=>{try{return JSON.parse(LS.getItem(k))||d}catch(e){return d}};
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
-let S=Object.assign({players:[],level:3,mode:'mix',pun:'choose',drinks:[1,2,2,3],money:[1,2,2,4],off:[]},load('ad-set',{}));
+let S=Object.assign({players:[],mode:'mix',pun:'choose',drinks:[1,2,2,3],money:[1,2,2,4],off:[]},load('ad-set',{}));
+if(!Array.isArray(S.levels)||!S.levels.length)S.levels=[1,2,3,4].filter(l=>l<=(S.level||3));delete S.level;
 let cards=load('ad-cards',null);if(!Array.isArray(cards)||!cards.length)cards=D.map(mk);
 let G=load('ad-game',null),editId=null;
 const save=()=>{LS.setItem('ad-set',JSON.stringify(S));LS.setItem('ad-cards',JSON.stringify(cards));LS.setItem('ad-game',JSON.stringify(G))};
@@ -150,13 +151,14 @@ function ch(id,items,key,cur){$('#'+id).innerHTML=items.map(([v,t,s])=>`<button 
 function home(){
  $('#cnt').textContent=S.players.length;
  $('#pl').innerHTML=S.players.map((p,i)=>`<span class="chip">${esc(p)} <b onclick="S.players.splice(${i},1);save();home()">×</b></span>`).join('')||'<span class="hint">Añade al menos 2 jugadores</span>';
- ch('lv',LV.map((l,i)=>[i+1,l[0]+' '+l[1],'Nivel '+(i+1)]),'level',S.level);
+ $('#lv').innerHTML=LV.map((l,i)=>`<button class="${S.levels.includes(i+1)?'sel':''}" onclick="togL(${i+1})"><b>${l[0]} ${l[1]}</b><small>Nivel ${i+1}</small></button>`).join('');
  ch('md',[['q','💬 Preguntas'],['c','🔥 Retos'],['mix','🎲 Mixto']],'mode',S.mode);
  ch('pn',[['d','🍺 Beber'],['m','💰 Pagar'],['p','👕 Prenda'],['choose','🎲 Elegir entre las 3']],'pun',S.pun);
 }
+function togL(n){if(S.levels.includes(n)){if(S.levels.length==1)return toast('Elige al menos un nivel');S.levels=S.levels.filter(x=>x!=n)}else S.levels=[...S.levels,n].sort();save();home()}
 function addP(){let v=$('#np').value.split(',').map(x=>x.trim()).filter(Boolean);
  v.forEach(n=>{if(!S.players.some(p=>p.toLowerCase()==n.toLowerCase()))S.players.push(n)});$('#np').value='';save();home()}
-const pool=()=>cards.filter(c=>c.level<=S.level&&!S.off.includes(c.cat)&&(S.mode=='mix'||S.mode==c.type)&&(c.n!=2||S.players.length>1));
+const pool=()=>cards.filter(c=>S.levels.includes(c.level)&&!S.off.includes(c.cat)&&(S.mode=='mix'||S.mode==c.type)&&(c.n!=2||S.players.length>1));
 function start(){
  if(S.players.length<2)return toast('Mínimo 2 jugadores');
  if(!pool().length)return toast('No hay cartas con esos filtros');
@@ -169,7 +171,7 @@ function draw(){
  if(!c){toast('No hay cartas disponibles');return go('home')}
  let p=G.order[G.i%G.order.length],o=shuf(G.order.filter(x=>x!=p))[0]||'';
  G.cid=c.id;G.cur=p;G.txt=c.text.replace(/\{otro\}/g,o);save();
- $('#turn').textContent='Turno de '+p;
+ $('#turn').textContent=p;{let h=(G.order.indexOf(p)*67+335)%360,t=$('#tb');t.style.setProperty('--h1',`hsl(${h} 90% 55%)`);t.style.setProperty('--h2',`hsl(${(h+50)%360} 85% 45%)`);t.style.setProperty('--gl',`hsl(${h} 90% 55% / .45)`);t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop')}
  $('#gsub').textContent=`Ronda ${Math.floor(G.i/G.order.length)+1} · ${G.st[p].pts} pts`;
  const q=c.type=='q';
  $('#gc').innerHTML=`<div class="card l${c.level}"><div><div class="badges"><span class="badge">${q?'💬 PREGUNTA':'🔥 RETO'} — NIVEL ${c.level}</span><span class="badge">${ico(c.cat)} ${esc(c.cat)}</span>${c.n==2?'<span class="badge">👤👤 Dúo</span>':c.n==0?'<span class="badge">👥 Grupo</span>':''}</div>
@@ -206,15 +208,85 @@ function saveC(){let text=$('#ex').value.trim(),cat=$('#ec').value.trim();if(!te
  if(editId)Object.assign(cards.find(x=>x.id==editId),o);else cards.push({id:uid(),...o});
  save();$('#md2').classList.remove('on');rc();toast('Carta guardada')}
 function delC(id){if(!confirm('¿Borrar esta carta?'))return;cards=cards.filter(c=>c.id!=id);save();rc()}
-function expo(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(cards,null,2)],{type:'application/json'}));a.download='after-dark-cartas.json';a.click()}
-function impo(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{
- let x=JSON.parse(r.result);if(!Array.isArray(x))throw 0;let add=0;
- x.forEach(c=>{if(!c.text||!c.cat||!['q','c'].includes(c.type)||cards.some(k=>k.text==c.text))return;cards.push({id:uid(),type:c.type,level:Math.min(4,Math.max(1,+c.level||1)),cat:c.cat,n:[0,1,2].includes(c.n)?c.n:1,text:c.text});add++});
- save();rc();toast(add+' cartas importadas')}catch(err){toast('Archivo no válido')}};r.readAsText(f);e.target.value=''}
+const README=`AFTER DARK - EXPORTAR E IMPORTAR CARTAS
+=======================================
+
+Este ZIP contiene:
+  - cartas.json  -> todas tus cartas
+  - LEEME.txt    -> este archivo
+
+CÓMO EXPORTAR
+  1. Abre la app y ve a la pestaña "Cartas".
+  2. Pulsa "Exportar cartas (ZIP con LEEME)".
+  3. Se descargará after-dark-cartas.zip (en iPhone: Archivos > Descargas).
+  Guárdalo en iCloud o donde quieras como copia de seguridad.
+
+CÓMO IMPORTAR
+  1. Si tienes el ZIP, descomprímelo (en iPhone, toca el ZIP en Archivos).
+  2. En la app, pestaña "Cartas", pulsa "Importar cartas (.json o .zip)".
+  3. Elige cartas.json (o el ZIP original exportado por la app).
+  Las cartas nuevas se AÑADEN a las que ya tienes. Las que tengan
+  exactamente el mismo texto que una existente se ignoran.
+  Las cartas con datos no válidos se saltan.
+
+FORMATO DE cartas.json
+  Es una lista de cartas. Cada carta tiene estos campos:
+
+  type   "q" = pregunta, "c" = reto
+  level  1 = Suave, 2 = Atrevido, 3 = Picante, 4 = Sin filtros
+  cat    categoría (texto libre). Las de serie: Relaciones, Secretos,
+         Humillación, Sexual, Personal, Grupo. Puedes inventar otras.
+  n      1 = solo quien juega
+         2 = con otro jugador al azar (escribe {otro} en el texto)
+         0 = todo el grupo
+  text   el texto de la carta
+  id     (opcional) se ignora al importar
+
+  Ejemplo:
+  [
+    {"type":"c","level":3,"cat":"Secretos","n":1,"text":"Cuenta un secreto."},
+    {"type":"q","level":2,"cat":"Relaciones","n":2,"text":"¿Saldrías con {otro}?"}
+  ]
+
+CONSEJOS
+  - Guarda el archivo con codificación UTF-8 para que se vean bien las tildes.
+  - Si el archivo da "no válido", revisa comas y comillas del JSON.
+  - Restaurar las cartas de ejemplo borra las tuyas: exporta antes.
+`;
+const CRC=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return b=>{let c=-1;for(let i=0;i<b.length;i++)c=t[(c^b[i])&255]^(c>>>8);return(c^-1)>>>0}})();
+function zip(files){const enc=new TextEncoder(),parts=[],cd=[];let off=0;
+ for(const [n,t] of files){const nb=enc.encode(n),d=enc.encode(t),crc=CRC(d);
+  const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(12,0x21,true);h.setUint32(14,crc,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,nb.length,true);
+  parts.push(h.buffer,nb,d);
+  const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(14,0x21,true);c.setUint32(16,crc,true);c.setUint32(20,d.length,true);c.setUint32(24,d.length,true);c.setUint16(28,nb.length,true);c.setUint32(42,off,true);
+  cd.push(c.buffer,nb);off+=30+nb.length+d.length}
+ const cs=cd.reduce((a,b)=>a+b.byteLength,0),e=new DataView(new ArrayBuffer(22));
+ e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+ return new Blob([...parts,...cd,e.buffer],{type:'application/zip'})}
+function unzipJson(buf){const v=new DataView(buf),u=new Uint8Array(buf);let p=0;
+ while(p+30<=buf.byteLength&&v.getUint32(p,true)==0x04034b50){const m=v.getUint16(p+8,true),cs=v.getUint32(p+18,true),nl=v.getUint16(p+26,true),el=v.getUint16(p+28,true),n=new TextDecoder().decode(u.slice(p+30,p+30+nl)),s=p+30+nl+el;
+  if(m!=0)throw 0;if(n.endsWith('.json'))return new TextDecoder().decode(u.slice(s,s+cs));p=s+cs}
+ throw 0}
+function expo(){const a=document.createElement('a');a.href=URL.createObjectURL(zip([['cartas.json',JSON.stringify(cards,null,2)],['LEEME.txt',README.replace(/\n/g,'\r\n')]]));a.download='after-dark-cartas.zip';a.click();toast('ZIP generado')}
+function impo(e){const f=e.target.files[0];e.target.value='';if(!f)return;
+ f.arrayBuffer().then(b=>{let txt;
+  if(/\.zip$/i.test(f.name)||new Uint8Array(b)[0]==0x50){try{txt=unzipJson(b)}catch(x){return toast('ZIP no compatible: descomprímelo e importa cartas.json')}}
+  else txt=new TextDecoder().decode(b);
+  try{let x=JSON.parse(txt);if(!Array.isArray(x))throw 0;let add=0;
+   x.forEach(c=>{if(!c||!c.text||!c.cat||!['q','c'].includes(c.type)||cards.some(k=>k.text==c.text))return;cards.push({id:uid(),type:c.type,level:Math.min(4,Math.max(1,+c.level||1)),cat:String(c.cat),n:[0,1,2].includes(c.n)?c.n:1,text:String(c.text)});add++});
+   save();rc();toast(add+' cartas importadas')}catch(err){toast('Archivo no válido')}})}
 function rset(){
  $('#pv').innerHTML=LV.map((l,i)=>`<div class="lvrow"><span>${l[0]} ${l[1]}</span><input type="number" min="0" value="${S.drinks[i]}" onchange="S.drinks[${i}]=+this.value||0;save()"><input type="number" min="0" step=".5" value="${S.money[i]}" onchange="S.money[${i}]=+this.value||0;save()"></div>`).join('');
  $('#cg').innerHTML=cats().map(c=>`<span class="chip ${S.off.includes(c)?'off':''}" onclick="tog('${esc(c).replace(/'/g,"\\'")}')">${ico(c)} ${esc(c)}</span>`).join('')}
 function tog(c){S.off=S.off.includes(c)?S.off.filter(x=>x!=c):[...S.off,c];save();rset()}
+
+async function dlHtml(){try{
+ const r=await fetch(location.href.split('#')[0].split('?')[0],{cache:'no-store'});let h=await r.text();
+ const a=h.indexOf('/*D0*/'),b=h.indexOf('/*D1*/');if(a<0||b<0)throw 0;
+ const js='const D=[\n'+cards.map(c=>JSON.stringify([c.type,c.level,c.cat,c.n,c.text]).replace(/</g,'\\u003c')).join(',\n')+'];';
+ h=h.slice(0,a+6)+js+h.slice(b);
+ const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([h],{type:'text/html'}));l.download='index.html';l.click();toast('index.html generado')
+}catch(e){toast('No se pudo generar el archivo')}}
 function resetCards(){if(!confirm('Se reemplazarán tus cartas por las de ejemplo.'))return;cards=D.map(mk);save();toast('Cartas restauradas')}
 function wipe(){if(!confirm('¿Borrar jugadores, cartas, ajustes y partida?'))return;['ad-set','ad-cards','ad-game'].forEach(k=>LS.removeItem(k));location.reload()}
 G?go('game'):go('home');if(G)draw_resume();
